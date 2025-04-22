@@ -23,7 +23,7 @@ const init = function ()
   currentScore = 0;
   activePlayer = 0;
   playing = true;
-
+  goalScore = 20; // Default goal score
 
   playersWinningCount = [0, 0]; // Initialize playersWinningCount
   score0El.textContent = 0;
@@ -101,6 +101,7 @@ btnHold.addEventListener('click', function ()
 
 btnNew.addEventListener('click', init);
 /* Enhanced script.js: Adding playersWinningCount (best-of-N matches) with optimizations */
+
 
 inpbox.addEventListener('keydown', (e) =>
 {

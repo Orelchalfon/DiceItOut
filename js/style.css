@@ -49,7 +49,7 @@ main h1 {
 }
 .inpBox {
   position: absolute;
-  top: 1rem;
+  top: 4rem;
   left: 50%;
   width: clamp(5rem, 15vw, 30rem);
 
@@ -209,7 +209,7 @@ main h1 {
 }
 
 .btn--new {
-  top: 5rem;
+  top: 8.5rem;
 }
 .btn--roll {
   top: 39.3rem;
