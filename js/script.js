@@ -65,7 +65,7 @@ btnRoll.addEventListener('click', () =>
 {
   if (!playing) return; // guard clause for clarity
   const dice = Math.floor(Math.random() * 6) + 1; // floor is more semantically clear
-  diceEl.src = `dice-${dice}.png`;
+  diceEl.src = `public/dice-${dice}.png`;
   diceEl.classList.remove('hidden');
 
   if (dice !== 1) {
