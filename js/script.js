@@ -1,107 +1,106 @@
-'use strict';
+'use strictly';
 
-// Selecting elements
-const player0El = document.querySelector('.player--0');
-const player1El = document.querySelector('.player--1');
-const score0El = document.querySelector('#score--0');
-const score1El = document.getElementById('score--1');
-const current0El = document.getElementById('current--0');
-const current1El = document.getElementById('current--1');
-
+// Cache selectors
+const playerEls = [
+  document.querySelector('.player--0'),
+  document.querySelector('.player--1')
+];
+const scoreEls = [
+  document.getElementById('score--0'),
+  document.getElementById('score--1')
+];
+const currentEls = [
+  document.getElementById('current--0'),
+  document.getElementById('current--1')
+];
+const winsEls = [
+  document.getElementById('wins--0'),
+  document.getElementById('wins--1')
+];
 const diceEl = document.querySelector('.dice');
 const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
 const btnHold = document.querySelector('.btn--hold');
-const inpbox = document.querySelector('#goal')
-let scores, currentScore, activePlayer, playing, goalScore, playersWinningCount;
+const inpbox = document.querySelector('#goal');
+let scores, currentScore, activePlayer, playing,
+  playersWinningCount = [0, 0]; // track match wins
+const bestOf = 3; // first to 3 wins
+let goalScore = 100; // dynamic via input (not yet wired)
 
-
-// Starting conditions
-const init = function ()
+const init = () =>
 {
+  if (playersWinningCount[0] === bestOf || playersWinningCount[1] === bestOf) {
+    playersWinningCount = [0, 0]; // reset match wins
+    scoreEls.forEach(el => el.textContent = '0'); // reset scores
+    winsEls.forEach(el => el.textContent = '🏅 : 0');
+    playerEls.forEach(el => el.classList.remove('final--winner'));// reset match wins display
+    inpbox.parentElement.classList.remove('hidden'); // show input when game starts
+  }
   scores = [0, 0];
   currentScore = 0;
-  activePlayer = 0;
+  playerEls.forEach(el => el.classList.remove('player--active'));
+  activePlayer = Math.round(Math.random());
+  playerEls[activePlayer].classList.add('player--active');
   playing = true;
-  goalScore = 20; // Default goal score
 
-  playersWinningCount = [0, 0]; // Initialize playersWinningCount
-  score0El.textContent = 0;
-  score1El.textContent = 0;
-  current0El.textContent = 0;
-  current1El.textContent = 0;
 
+  // reset UI
+  scoreEls.forEach(el => el.textContent = '0');
+  currentEls.forEach(el => el.textContent = '0');
   diceEl.classList.add('hidden');
-  inpbox?.parentElement.classList.remove('hidden') // show input when game starts
-  player0El.classList.remove('player--winner');
-  player1El.classList.remove('player--winner');
-  player0El.classList.add('player--active');
-  player1El.classList.remove('player--active');
+  playerEls.forEach(el => el.classList.remove('player--winner'));
 };
 init();
 
-const switchPlayer = function ()
+const switchPlayer = () =>
 {
-  document.getElementById(`current--${activePlayer}`).textContent = 0;
+  currentEls[activePlayer].textContent = '0';
   currentScore = 0;
-  activePlayer = activePlayer === 0 ? 1 : 0;
-  player0El.classList.toggle('player--active');
-  player1El.classList.toggle('player--active');
+  playerEls[activePlayer].classList.toggle('player--active');
+  activePlayer = 1 - activePlayer;
+  playerEls[activePlayer].classList.toggle('player--active');
 };
 
-// Rolling dice functionality
-btnRoll.addEventListener('click', function ()
+btnRoll.addEventListener('click', () =>
 {
-  if (playing) {
-    const dice = Math.trunc(Math.random() * 6) + 1;
+  if (!playing) return; // guard clause for clarity
+  const dice = Math.floor(Math.random() * 6) + 1; // floor is more semantically clear
+  diceEl.src = `dice-${dice}.png`;
+  diceEl.classList.remove('hidden');
 
-    diceEl.classList.remove('hidden');
-    diceEl.src = `./public/dice-${dice}.png`;
-
-    if (dice !== 1) {
-      currentScore += dice;
-      document.getElementById(
-        `current--${activePlayer}`
-      ).textContent = currentScore;
-    } else {
-      // Switch to next player
-      switchPlayer();
-    }
+  if (dice !== 1) {
+    currentScore += dice;
+    currentEls[activePlayer].textContent = currentScore;
+  } else {
+    switchPlayer();
   }
 });
 
-btnHold.addEventListener('click', function ()
+btnHold.addEventListener('click', () =>
 {
-  if (playing) {
-    // 1. Add current score to active player's score
-    scores[activePlayer] += currentScore;
-    // scores[1] = scores[1] + currentScore
+  if (!playing) return;
+  scores[activePlayer] += currentScore;
+  scoreEls[activePlayer].textContent = scores[activePlayer];
 
-    document.getElementById(`score--${activePlayer}`).textContent =
-      scores[activePlayer];
+  // single source for win condition
+  if (scores[activePlayer] >= goalScore) {
+    playing = false;
+    diceEl.classList.add('hidden');
 
-    // 2. Check if player's score is >= 100
-    if (scores[activePlayer] >= goalScore) {
-      // Finish the game
-      playing = false;
-      diceEl.classList.add('hidden');
-
-      document
-        .querySelector(`.player--${activePlayer}`)
-        .classList.add('player--winner');
-      document
-        .querySelector(`.player--${activePlayer}`)
-        .classList.remove('player--active');
-    } else {
-      // Switch to the next player
-      switchPlayer();
+    // update match wins and check best-of
+    playersWinningCount[activePlayer]++;
+    winsEls[activePlayer].textContent = `🏅 : ${playersWinningCount[activePlayer]}`;
+    if (playersWinningCount[activePlayer] >= bestOf) {
+      setTimeout(() => playerEls[activePlayer].classList.add('final--winner'), 100);
     }
+    playerEls[activePlayer].classList.add('player--winner');
+
+  } else {
+    switchPlayer();
   }
 });
 
 btnNew.addEventListener('click', init);
-/* Enhanced script.js: Adding playersWinningCount (best-of-N matches) with optimizations */
-
 
 inpbox.addEventListener('keydown', (e) =>
 {
