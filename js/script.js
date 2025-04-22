@@ -12,7 +12,7 @@ const diceEl = document.querySelector('.dice');
 const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
 const btnHold = document.querySelector('.btn--hold');
-
+const inpbox = document.querySelector('#goal')
 let scores, currentScore, activePlayer, playing, goalScore, playersWinningCount;
 
 
@@ -32,7 +32,7 @@ const init = function ()
   current1El.textContent = 0;
 
   diceEl.classList.add('hidden');
-  inpbox.parentElement.classList.remove('hidden') // show input when game starts
+  inpbox?.parentElement.classList.remove('hidden') // show input when game starts
   player0El.classList.remove('player--winner');
   player1El.classList.remove('player--winner');
   player0El.classList.add('player--active');
@@ -53,16 +53,12 @@ const switchPlayer = function ()
 btnRoll.addEventListener('click', function ()
 {
   if (playing) {
-    // 1. Generating a random dice roll
     const dice = Math.trunc(Math.random() * 6) + 1;
 
-    // 2. Display dice
     diceEl.classList.remove('hidden');
     diceEl.src = `./public/dice-${dice}.png`;
 
-    // 3. Check for rolled 1
     if (dice !== 1) {
-      // Add dice to current score
       currentScore += dice;
       document.getElementById(
         `current--${activePlayer}`
@@ -106,3 +102,21 @@ btnHold.addEventListener('click', function ()
 btnNew.addEventListener('click', init);
 /* Enhanced script.js: Adding playersWinningCount (best-of-N matches) with optimizations */
 
+inpbox.addEventListener('keydown', (e) =>
+{
+  if (e.key === 'Enter') {
+    const val = +inpbox.value;
+
+    if (val < 10 || val > 100 || isNaN(val)) {
+      alert('Please enter a number between 10 and 100');
+      inpbox.focus();
+      return;
+    }
+
+    goalScore = val;
+    inpbox.value = '';
+    inpbox.parentElement.classList.add('hidden') // hide input when game starts
+  }
+
+
+});
