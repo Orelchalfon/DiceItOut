@@ -22,6 +22,8 @@ const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
 const btnHold = document.querySelector('.btn--hold');
 const inpbox = document.querySelector('#goal');
+const gameControls = document.querySelector('.game-controls');
+const isTablet = window.matchMedia('(max-width: 900px)');
 let scores, currentScore, activePlayer, playing,
   playersWinningCount = [0, 0]; // track match wins
 const bestOf = 3; // first to 3 wins
@@ -41,7 +43,6 @@ const init = () =>
   playerEls.forEach(el => el.classList.remove('player--active'));
   activePlayer = Math.round(Math.random());
   playerEls[activePlayer].classList.add('player--active');
-  playing = true;
 
 
   // reset UI
@@ -49,7 +50,11 @@ const init = () =>
   currentEls.forEach(el => el.textContent = '0');
   diceEl.classList.add('hidden');
   playerEls.forEach(el => el.classList.remove('player--winner'));
+
+  isTablet && activePlayer === 0 ? gameControls.classList.add('player--turn') : gameControls.classList.remove('player--turn')
+
 };
+
 init();
 
 const switchPlayer = () =>
@@ -59,6 +64,9 @@ const switchPlayer = () =>
   playerEls[activePlayer].classList.toggle('player--active');
   activePlayer = 1 - activePlayer;
   playerEls[activePlayer].classList.toggle('player--active');
+  isTablet && activePlayer === 0 ? gameControls.classList.add('player--turn') : gameControls.classList.remove('player--turn')
+
+
 };
 
 btnRoll.addEventListener('click', () =>
@@ -112,6 +120,9 @@ inpbox.addEventListener('keydown', (e) =>
       inpbox.focus();
       return;
     }
+
+    playing = true; // game is active
+
 
     goalScore = val;
     inpbox.value = '';

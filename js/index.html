@@ -9,13 +9,8 @@
   </head>
   <body>
     <main>
-      <h1>🎲 Pig Game 🎲</h1>
       <section class="player player--0">
         <span id="wins--0">🏅 : 0</span>
-        <div class="inpBox">
-          <input type="text" name="" id="goal" />
-          <label for="goal">Enter Goal . . .</label>
-        </div>
         <h2 class="name" id="name--0">Player 1</h2>
         <p class="score" id="score--0">43</p>
         <div class="current">
@@ -23,21 +18,33 @@
           <p class="current-score" id="current--0">0</p>
         </div>
       </section>
+
+      <div class="game-controls">
+        <h1>🎲 Pig Game 🎲</h1>
+
+        <div class="inpBox">
+          <input type="text" name="" id="goal" />
+          <label for="goal">Enter Goal . . .</label>
+        </div>
+
+        <img src="dice-5.png" alt="Playing dice" class="dice" />
+
+        <div class="buttons">
+          <button class="btn btn--new">🔄 New game</button>
+          <button class="btn btn--roll">🎲 Roll dice</button>
+          <button class="btn btn--hold">📥 Hold</button>
+        </div>
+      </div>
+
       <section class="player player--1">
         <span id="wins--1">🏅 : 0 </span>
-
-        <h2 class="name" id="name--1">Player 2</h2>
+        <h2 contenteditable="true" class="name" id="name--1">Player 2</h2>
         <p class="score" id="score--1">24</p>
         <div class="current">
           <p class="current-label">Current</p>
           <p class="current-score" id="current--1">0</p>
         </div>
       </section>
-
-      <img src="dice-5.png" alt="Playing dice" class="dice" />
-      <button class="btn btn--new">🔄 New game</button>
-      <button class="btn btn--roll">🎲 Roll dice</button>
-      <button class="btn btn--hold">📥 Hold</button>
     </main>
     <script src="script.js"></script>
   </body>
